@@ -19,6 +19,7 @@ class Course {
         ]);
     }
 
+
     public function getAll() {
         return $this->conn->query("SELECT * FROM {$this->table} ORDER BY id DESC")->fetchAll();
     }
