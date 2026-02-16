@@ -1,3 +1,4 @@
+HEAD
 # CakePHP 3
 
 /vendor/*
@@ -23,3 +24,6 @@
 /app/Config/core.php
 /app/Config/database.php
 /vendors/*
+
+/vendor/
+7289aed (Добавление в главную ветку)
