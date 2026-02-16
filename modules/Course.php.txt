@@ -1,0 +1,49 @@
+<?php
+require_once __DIR__ . '/../config/Database.php';
+
+class Course {
+    private $conn;
+    private $table = "courses";
+
+    public function __construct() {
+        $this->conn = (new Database())->connect();
+    }
+
+    public function create($title, $description) {
+        $sql = "INSERT INTO {$this->table} (title, description, created_at)
+                VALUES (:title, :description, NOW())";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            ':title' => $title,
+            ':description' => $description
+        ]);
+    }
+
+    public function getAll() {
+        return $this->conn->query("SELECT * FROM {$this->table} ORDER BY id DESC")->fetchAll();
+    }
+
+    public function getById($id) {
+        $stmt = $this->conn->prepare("SELECT * FROM {$this->table} WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch();
+    }
+
+    public function update($id, $title, $description) {
+        $stmt = $this->conn->prepare(
+            "UPDATE {$this->table}
+             SET title = :title, description = :description
+             WHERE id = :id"
+        );
+        return $stmt->execute([
+            ':id' => $id,
+            ':title' => $title,
+            ':description' => $description
+        ]);
+    }
+
+    public function delete($id) {
+        $stmt = $this->conn->prepare("DELETE FROM {$this->table} WHERE id = :id");
+        return $stmt->execute([':id' => $id]);
+    }
+}
