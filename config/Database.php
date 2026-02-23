@@ -1,26 +1,25 @@
 <?php
-class Database {
-    private $host = "localhost";
-    private $db_name = "online learning platform";
-    private $username = "root";
-    private $password = "";
-    private $charset = "utf8mb4";
-    public $conn;
+// 1. Подключаем автозагрузчик Composer (он сам найдет все библиотеки)
+require_once __DIR__ . '/../vendor/autoload.php';
+// 2. Загружаем настройки из .env
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->safeLoad();
+try {
+    // 3. Берем данные из переменных окружения
+    $host = $_ENV['DB_HOST'] ?? 'localhost';
+    $db   = $_ENV['DB_NAME'] ?? 'online learning platform';
+    $user = $_ENV['DB_USER'] ?? 'root';
+    $pass = $_ENV['DB_PASS'] ?? '';
+        $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
+        $opt = [
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES   => false,
+    ];
 
-    public function connect() {
-        if ($this->conn !== null) {
-            return $this->conn;
-        }
+    $pdo = new PDO($dsn, $user, $pass, $opt);
 
-        try {
-            $dsn = "mysql:host={$this->host};dbname={$this->db_name};charset={$this->charset}";
-            $this->conn = new PDO($dsn, $this->username, $this->password);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-            die("DB Error: " . $e->getMessage());
-        }
-
-        return $this->conn;
-    }
+} catch (\PDOException $e) {
+    die("Ошибка подключения к БД: " . $e->getMessage());
 }
+?>
