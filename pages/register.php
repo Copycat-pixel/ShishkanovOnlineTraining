@@ -1,6 +1,6 @@
 <?php
 session_start();
-require __DIR__ . '/../config/Database.php';
+require __DIR__ . '/../config/database.php';
 
 $error = '';
 
@@ -20,14 +20,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "Пользователь с таким email уже существует!";
         } else {
             $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-
             $stmt = $pdo->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'student')");
             $stmt->execute([$username, $email, $passwordHash]);
-
             $_SESSION['user_id'] = $pdo->lastInsertId();
             $_SESSION['user_name'] = $username;
-
-            header('Location: dashboard.php');
+            header('Location: ../pages/index.php');
             exit;
         }
     }
@@ -116,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="d-flex align-items-center my-3">
                         <hr class="flex-grow-1">
                         <span class="mx-2 text-muted">или</span>
-                        <hr class="flex-grow-1">
+                        <hr class="flex-grow-1">    
                     </div>
 
                     <a href="login.php" class="btn btn-outline-secondary w-100">Войти в существующий аккаунт</a>
